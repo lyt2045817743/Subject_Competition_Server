@@ -1,0 +1,26 @@
+{
+  "name": "subject_competition_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lyt2045817743/Subject_Competition_Server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lyt2045817743/Subject_Competition_Server/issues"
+  },
+  "homepage": "https://github.com/lyt2045817743/Subject_Competition_Server#readme",
+  "dependencies": {
+    "koa": "^2.13.1",
+    "koa-json": "^2.0.2",
+    "koa-router": "^10.0.0",
+    "nodemon": "^2.0.7"
+  }
+}
