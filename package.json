@@ -19,8 +19,10 @@
   "homepage": "https://github.com/lyt2045817743/Subject_Competition_Server#readme",
   "dependencies": {
     "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
     "koa-json": "^2.0.2",
     "koa-router": "^10.0.0",
+    "mongoose": "^5.11.17",
     "nodemon": "^2.0.7"
   }
 }
