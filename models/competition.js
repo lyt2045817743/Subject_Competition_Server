@@ -15,12 +15,21 @@ const competitionSchema = new Schema({
         required: true
     },
     deadlineDate: {
-        type: String
+        type: Date
     },
     curStageNum: {
         type: Number,
         required: true
     },
+    currentInsti: {
+        type: String
+    },
+    createTime: {
+        type: Date
+    },
+    createUser: {
+        type: String
+    }
 },
     {
         versionKey: false

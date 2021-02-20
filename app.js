@@ -2,12 +2,14 @@ const Koa = require('koa');
 const router = require('koa-router')()
 const mongoose = require('mongoose');
 const bodyParser = require('koa-bodyparser');
+const cors = require('koa-cors');
 
 const competition = require('./routes/competition/competition');
 const { dbUrl } = require('./config/base');
 const MidWareOfErr = require('./config/MidWareOfError');
 
 const app = new Koa();
+
 app.use(bodyParser());
 app.use(MidWareOfErr)
 
@@ -24,11 +26,11 @@ mongoose.connect(dbUrl, {
     console.log('数据库链接失败');
 })
 
-
+app.use(cors());
 // app.use(banner).use(router.allowedMethods());
 router.use('/api/competition', competition)
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen(3000)
+app.listen(80)
 console.log('学科竞赛系统后台启动成功');
