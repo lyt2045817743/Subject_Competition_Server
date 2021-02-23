@@ -1,7 +1,7 @@
 const router = require('koa-router')();
 const Competition = require('../../models/competition');
-const InitRes = require('../../config/InitRes');
-const { chCompetition } = require('../../config/checkParams');
+const initCtx = require('../../util/initCtx');
+const { chCompetition } = require('../../util/checkParams');
 
 
 router.post('/addCompetition', async ctx => {
@@ -22,11 +22,11 @@ router.post('/addCompetition', async ctx => {
 
     await competition.save()
     .then( res => {
-        new InitRes(ctx, '添加赛事成功').success();
+        new initCtx(ctx, '添加赛事成功').success();
     })
     .catch( err => {
         console.log(err);
-        new InitRes(ctx).fail('添加赛事失败', 500);
+        new initCtx(ctx).fail('添加赛事失败', 500);
     })
 
 })
@@ -38,7 +38,7 @@ router.get('/queryCompList', async ctx => {
 
     const listdata = await Competition.find({},{'name':1,'_id':1, 'createTime': 1, 'institution': 1, 'currentInsti': 1, 'createTime': 1, 'curStageNum': 1, 'deadlineDate': 1}).sort({'createTime': -1}).skip((pageCount-1)*pageNum).limit(Number(pageNum));
     
-    new InitRes(ctx, 'SUCCESS', listdata).success();
+    new initCtx(ctx, 'SUCCESS', listdata).success();
 })
 
 module.exports = router.routes();

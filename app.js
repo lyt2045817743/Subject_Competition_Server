@@ -5,8 +5,8 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa-cors');
 
 const competition = require('./routes/competition/competition');
-const { dbUrl } = require('./config/base');
-const MidWareOfErr = require('./config/MidWareOfError');
+const { dbUrl } = require('./util/base');
+const MidWareOfErr = require('./util/MidWareOfError');
 
 const app = new Koa();
 
@@ -32,5 +32,5 @@ router.use('/api/competition', competition)
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen(80)
+app.listen(5000)
 console.log('学科竞赛系统后台启动成功');

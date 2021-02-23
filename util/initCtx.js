@@ -1,5 +1,5 @@
 // 用来初始化返回的响应
-class InitRes{
+class initCtx{
     constructor(ctx, msg='SUCCESS', data=[], code=200) {
         this.ctx = ctx;
         this.msg = msg;
@@ -23,4 +23,4 @@ class InitRes{
     }
 }
 
-module.exports = InitRes;
+module.exports = initCtx;
