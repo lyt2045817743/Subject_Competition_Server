@@ -10,14 +10,16 @@ class initCtx{
     success() {
         this.ctx.body = {
             data: this.data,
-            msg: this.msg
+            msg: this.msg,
+            code: 2000
         }
         this.ctx.status = this.code;
     }
 
-    fail(failMsg, failCode) {
+    fail(failMsg, failCode, code) {
         this.ctx.body = {
             msg: failMsg,
+            code,
         }
         this.ctx.status = failCode;
     }
