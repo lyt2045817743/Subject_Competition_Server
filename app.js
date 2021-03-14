@@ -5,6 +5,9 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('koa-cors');
 
 const competition = require('./routes/competition/competition');
+const role = require('./routes/role/role');
+const user = require('./routes/user/user');
+
 const { dbUrl } = require('./util/base');
 const MidWareOfErr = require('./util/MidWareOfError');
 
@@ -28,7 +31,10 @@ mongoose.connect(dbUrl, {
 
 app.use(cors());
 // app.use(banner).use(router.allowedMethods());
-router.use('/api/competition', competition)
+router.use('/api/competition', competition);
+router.use('/api/role', role);
+router.use('/api/user', user);
+
 app.use(router.routes());
 app.use(router.allowedMethods());
 

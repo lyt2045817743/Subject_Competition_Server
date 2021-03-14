@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/lyt2045817743/Subject_Competition_Server#readme",
   "dependencies": {
+    "async": "^3.2.0",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-cors": "0.0.16",

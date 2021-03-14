@@ -33,4 +33,28 @@ class chCompetition extends check{
     }
 }
 
-module.exports = { check, chCompetition };
+class chRole extends check{
+    chRoleFun() {
+        const list = ['角色名称不能为空'];
+        super.checkParamName();
+        super.checkEmptyVal(list);
+    }
+}
+
+class chLogin extends check{
+    chLoginFun() {
+        const list = ['学工号不能为空', '密码不能为空'];
+        super.checkParamName();
+        super.checkEmptyVal(list);
+    }
+}
+
+class chUser extends check{
+    chUserFun() {
+        const list = ['身份不能为空', '学工号不能为空', '初始密码不能为空']
+        super.checkParamName();
+        super.checkEmptyVal(list);
+    }
+}
+
+module.exports = { check, chCompetition, chRole, chLogin, chUser };
