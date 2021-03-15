@@ -123,8 +123,54 @@ router.get('/queryUserList', async ctx => {
         // .sort({'createTime': -1})
         .skip((pageCount-1)*pageNum)
         .limit(Number(pageNum));
+
+    // ... 查询时的数据中说明是否为最后一页
     
     new initCtx(ctx, 'SUCCESS', listdata).success();
+})
+
+// 根据numberId获取单个用户信息
+router.get('/getUserInfo/:numberId', async ctx => {
+    const numberId = ctx.params.numberId;
+    await User.findOne({numberId}, {
+        'identityType': 1,
+        // 'initPwd': 1,
+        'isManager': 1,
+        'numberId': 1,
+        'roleVal': 1,
+        '_id': 1
+    }).then( res => {
+        new initCtx(ctx, 'SUCCESS', res).success()
+    }).catch( err => {
+        console.log(err);
+        new initCtx(ctx).fail('用户查询失败，请稍后重试', 500)
+    })
+})
+
+// 根据numberId修改某个用户信息
+router.put('/updateUserInfo/:numberId', async ctx => {
+    const numberId = ctx.params.numberId;
+    const { isManager, roleVal } = ctx.request.body;
+    await User.updateOne({numberId}, {isManager, roleVal}).then( res => {
+        new initCtx(ctx, '修改成功').success();
+    }).catch( err => {
+        console.log(err);
+        new initCtx(ctx).fail('修改失败，请稍后重试', 500)
+    })
+})
+
+// 根据numberId删除某用户
+router.delete('/delUser/:numberId', async (ctx) => {
+    const numberId = ctx.params.numberId;
+    
+    await User.deleteOne({numberId}).then( res => {
+        new initCtx(ctx, '删除成功').success()
+    }).catch( err => {
+
+        console.log(err);
+        new initCtx(ctx).fail('用户删除失败，请稍后重试', 500);
+    })
+
 })
 
 module.exports = router.routes();
