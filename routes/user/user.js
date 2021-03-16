@@ -1,8 +1,10 @@
 const router = require('koa-router')();
-const initCtx = require('../../util/initCtx');
 const User = require('../../models/user')
 const codeList = require('../../enum/codeList');
+
+const initCtx = require('../../util/initCtx');
 const { chUser } = require('../../util/checkParams')
+const { genToken } = require('../../util/tokenManager')
 // const async = require('async');
 
 // 管理员新增用户
@@ -100,12 +102,16 @@ router.post('/addUser', async ctx => {
 // 用户登录
 router.post('/login', async ctx => {
     const { numberId, password } = ctx.request.body;
-    const user = await User.find({"numberId": numberId, "password": password});
-    if(user.length) {
-        new initCtx(ctx, '登录成功').success()
-    } else {
+    
+    await User.findOne({"numberId": numberId, "password": password}).then( user => {
+        const { numberId, isManager, identityType } = user;
+        const token = genToken({numberId, isManager, identityType}, 'userAuth');
+        new initCtx(ctx, '登录成功', { token, isManager, identityType }).success()
+    }).catch( err => {
+        console.log(err);
         new initCtx(ctx).fail('登录失败', 200, codeList.notFound);
-    }
+    })
+
 })
 
 // 管理员获取用户列表
