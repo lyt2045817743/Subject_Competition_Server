@@ -10,6 +10,7 @@ const koajwt = require('koa-jwt');
 const competition = require('./routes/competition/competition');
 const role = require('./routes/role/role');
 const user = require('./routes/user/user');
+const institution = require('./routes/institution/institution');
 
 // 引入工具类
 const { dbUrl } = require('./util/base');
@@ -83,6 +84,8 @@ app.use(cors());
 router.use('/api/competition', competition);
 router.use('/api/role', role);
 router.use('/api/user', user);
+router.use('/api/institution', institution);
+
 
 app.use(router.routes());
 app.use(router.allowedMethods());
