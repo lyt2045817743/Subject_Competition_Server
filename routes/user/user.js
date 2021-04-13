@@ -125,9 +125,9 @@ router.post('/login', async ctx => {
     
     await User.findOne({"numberId": numberId, "password": password}).then( user => {
         // console.log(user);
-        const { numberId, isManager, identityType, userName } = user;
-        const token = genToken({numberId, isManager, identityType, userName}, 'userAuth');
-        new initCtx(ctx, '登录成功', { token, numberId, isManager, identityType, userName }).success()
+        const { numberId, isManager, identityType, userName, institution } = user;
+        const token = genToken({numberId, isManager, identityType, userName, institution}, 'userAuth');
+        new initCtx(ctx, '登录成功', { token, numberId, isManager, identityType, userName, institution }).success()
     }).catch( err => {
         console.log(err);
         new initCtx(ctx).fail('登录失败', 200, codeList.notFound);
@@ -142,6 +142,7 @@ router.put('/modifyPrivateInfo', async ctx => {
     // console.log(ctx.state.user);
     const { numberId } = ctx.state.user;
     const body = ctx.request.body;
+    
     await User.updateOne({numberId}, { ...body }).then( res => {
         new initCtx(ctx, '修改成功').success();
     }).catch(err => {

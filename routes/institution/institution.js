@@ -35,16 +35,27 @@ router.post('/addInsitution', async ctx => {
 router.get('/queryInstiList', async ctx => {
     const { pageNum, pageCount, keyword, parentId } = ctx.query;
 
-    const listdata = await Insitution.find({"name" : {$regex: keyword ? keyword : ''}, "parentId" : parentId},{
-        'name': 1,
-        'manager': 1,
-        'managerTel': 1,
-        '_id': 1,
-        'parentId': 1
-    })
-        // .sort({'createTime': -1})
-        .skip((pageCount-1)*pageNum)
-        .limit(Number(pageNum));
+    let listdata = [];
+    if(pageNum == -1 && pageCount == -1) {
+        listdata = await Insitution.find({"name" : {$regex: keyword ? keyword : ''}, "parentId" : parentId},{
+            'name': 1,
+            'manager': 1,
+            'managerTel': 1,
+            '_id': 1,
+            'parentId': 1
+        })
+    } else {
+        listdata = await Insitution.find({"name" : {$regex: keyword ? keyword : ''}, "parentId" : parentId},{
+            'name': 1,
+            'manager': 1,
+            'managerTel': 1,
+            '_id': 1,
+            'parentId': 1
+        })
+            // .sort({'createTime': -1})
+            .skip((pageCount-1)*pageNum)
+            .limit(Number(pageNum));
+    }
 
     // ... 查询时的数据中说明是否为最后一页
     
