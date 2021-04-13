@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/lyt2045817743/Subject_Competition_Server#readme",
   "dependencies": {
+    "cos-nodejs-sdk-v5": "^2.9.12",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",

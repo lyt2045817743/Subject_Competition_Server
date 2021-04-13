@@ -6,12 +6,15 @@ const initCtx = require('../../util/initCtx');
 const codeList = require('../../enum/codeList');
 
 router.post('/addInsitution', async ctx => {
-    const { name, manager, managerTel } = ctx.request.body;
+    const { name, manager, managerTel, level, parentId } = ctx.request.body;
     const institution = new Insitution({
         name,
         manager,
-        managerTel
+        managerTel,
+        level,
+        parentId
     })
+    
     const data = await User.findOne({ numberId: manager });
     if(!data) {
         new initCtx(ctx).fail('添加失败，请确认管理者学工号后重试！', 500);
@@ -30,13 +33,14 @@ router.post('/addInsitution', async ctx => {
 });
 
 router.get('/queryInstiList', async ctx => {
-    const { pageNum, pageCount, keyword } = ctx.query;
+    const { pageNum, pageCount, keyword, parentId } = ctx.query;
 
-    const listdata = await Insitution.find({"name" : {$regex: keyword ? keyword : ''}},{
+    const listdata = await Insitution.find({"name" : {$regex: keyword ? keyword : ''}, "parentId" : parentId},{
         'name': 1,
         'manager': 1,
         'managerTel': 1,
-        '_id': 1
+        '_id': 1,
+        'parentId': 1
     })
         // .sort({'createTime': -1})
         .skip((pageCount-1)*pageNum)
@@ -75,6 +79,7 @@ router.put('/updateInstiInfo/:name', async ctx => {
 
 router.delete('/delInsti/:name', async (ctx) => {
     const name = ctx.params.name;
+    // ... 如果当前单位有子单位，则不可删除
     
     await Insitution.deleteOne({name}).then( res => {
         new initCtx(ctx, '删除成功').success()

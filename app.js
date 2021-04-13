@@ -33,7 +33,7 @@ app.use(async(ctx, next)=> {
             const newToken = genToken({numberId, isManager, identityType}, 'userAuth')
             ctx.headers.authorization = 'Bearer '+ newToken;  
 
-        } 
+        }
 
     }
     await next();
