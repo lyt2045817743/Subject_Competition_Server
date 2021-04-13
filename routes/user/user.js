@@ -7,70 +7,16 @@ const { chUser } = require('../../util/checkParams')
 const { genToken } = require('../../util/tokenManager')
 // const async = require('async');
 
+
+
+
+/********************************************* 管理员操作接口 *********************************************/
+
+
+
 // 管理员新增用户
 router.post('/addUser', async ctx => {
     const { identityType, numberIds, isManager, initPwd, roleVal } = ctx.request.body;
-
-    // 失败代码开始 -- 如果列表中的用户有些已经存在，则返回提示
-
-    // const dataList = [];
-    // const repeatArr = [];
-    // const callbacks = [];
-
-    // JSON.parse(numberIds).map( numberId => {
-    //     const fun = function(callback) {
-    //         User.find({'numberId': numberId}).then( data => {
-                
-    //             if(data.length) {
-    //                 repeatArr.push(numberId)
-    //                 // console.log('repeat');
-    //             } else {
-    //                 dataList.push({identityType, numberId, isManager, initPwd, roleVal});
-    //                 // console.log('norepeat', dataList);
-    //             }
-    //             callback(null, numberId)
-    //         })
-    //     }
-    //     callbacks.push(fun) 
-    // })
-
-    // async.series(callbacks,function(err, numberId){ 
-        
-    //     if(repeatArr.length) {
-    //         console.log('重复！！');
-    //         new initCtx(ctx).fail('用户重复' + JSON.stringify(repeatArr), 200, codeList.repeat);
-    //     } else {
-    //         insert()
-    //     }
-  
-    // }) 
-
-    // 失败代码结束
-
-    // 方法一代码开始 -- 并不知道哪个是成功添加，哪个是已存在未成功的
-    // const dataList = [];
-    // JSON.parse(numberIds).forEach( numberId => {
-    //     dataList.push({identityType, numberId, isManager, initPwd, roleVal})
-    // })
-
-
-
-    // await User.insertMany(dataList).then( res => {
-    //     new initCtx(ctx, '添加用户成功').success();
-    // }).catch( err => {
-
-    //     console.log(err);
-    //     if(err.code === 11000) {
-    //         new initCtx(ctx).fail('某用户已存在，其余用户已成功添加', 200, codeList.repeat);
-    //     } else {
-    //         new initCtx(ctx).fail('添加用户失败', 500);
-    //     }
-    // })
-
-    // 方法一代码结束
-
-
-    // 方法二代码失败 开始
 
     for(let i=0; i<numberIds.length; i++) {
         const numberId = numberIds[i];
@@ -94,24 +40,7 @@ router.post('/addUser', async ctx => {
         })
 
     }
-    // 方法二代码结束
         
-})
-
-
-// 用户登录
-router.post('/login', async ctx => {
-    const { numberId, password } = ctx.request.body;
-    
-    await User.findOne({"numberId": numberId, "password": password}).then( user => {
-        const { numberId, isManager, identityType } = user;
-        const token = genToken({numberId, isManager, identityType}, 'userAuth');
-        new initCtx(ctx, '登录成功', { token, isManager, identityType }).success()
-    }).catch( err => {
-        console.log(err);
-        new initCtx(ctx).fail('登录失败', 200, codeList.notFound);
-    })
-
 })
 
 // 管理员获取用户列表
@@ -135,7 +64,7 @@ router.get('/queryUserList', async ctx => {
     new initCtx(ctx, 'SUCCESS', listdata).success();
 })
 
-// 根据numberId获取单个用户信息
+// 管理员根据numberId获取单个用户信息
 router.get('/getUserInfo/:numberId', async ctx => {
     const numberId = ctx.params.numberId;
     await User.findOne({numberId}, {
@@ -153,7 +82,7 @@ router.get('/getUserInfo/:numberId', async ctx => {
     })
 })
 
-// 根据numberId修改某个用户信息
+// 管理员根据numberId修改某个用户信息
 router.put('/updateUserInfo/:numberId', async ctx => {
     const numberId = ctx.params.numberId;
     const { isManager, roleVal } = ctx.request.body;
@@ -165,7 +94,7 @@ router.put('/updateUserInfo/:numberId', async ctx => {
     })
 })
 
-// 根据numberId删除某用户
+// 管理员根据numberId删除某用户
 router.delete('/delUser/:numberId', async (ctx) => {
     const numberId = ctx.params.numberId;
     
@@ -178,5 +107,73 @@ router.delete('/delUser/:numberId', async (ctx) => {
     })
 
 })
+
+
+
+
+
+
+/*********************************************** 用户操作接口 **************************************************/
+
+
+
+
+
+// 用户登录
+router.post('/login', async ctx => {
+    const { numberId, password } = ctx.request.body;
+    
+    await User.findOne({"numberId": numberId, "password": password}).then( user => {
+        // console.log(user);
+        const { numberId, isManager, identityType, userName } = user;
+        const token = genToken({numberId, isManager, identityType, userName}, 'userAuth');
+        new initCtx(ctx, '登录成功', { token, numberId, isManager, identityType, userName }).success()
+    }).catch( err => {
+        console.log(err);
+        new initCtx(ctx).fail('登录失败', 200, codeList.notFound);
+    })
+
+})
+
+
+
+// 用户自己修改个人信息
+router.put('/modifyPrivateInfo', async ctx => {
+    // console.log(ctx.state.user);
+    const { numberId } = ctx.state.user;
+    const body = ctx.request.body;
+    await User.updateOne({numberId}, { ...body }).then( res => {
+        new initCtx(ctx, '修改成功').success();
+    }).catch(err => {
+        console.log(err);
+        new initCtx(ctx).fail('修改失败，请稍后重试', 500)
+    })
+    
+})
+
+// 用户获取自己全部信息
+router.get('/getPrivateInfo', async ctx => {
+    const { numberId } = ctx.state.user;
+    await User.findOne({numberId}, {
+        "isManager": 1,
+        "_id": 1,
+        "identityType": 1,
+        "numberId": 1,
+        "roleVal": 1,
+        "userName": 1,
+        "contactWay":1,
+        "avatorUrl":1,
+        "institution":1,
+
+    }).then( res => {
+        new initCtx(ctx, 'SUCCESS', res).success()
+    }).catch( err => {
+        console.log(err);
+        new initCtx(ctx).fail('用户查询失败，请稍后重试', 500)
+    })
+})
+
+
+
 
 module.exports = router.routes();

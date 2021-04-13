@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const Userchema = new Schema({
     userName:{
@@ -23,13 +22,21 @@ const Userchema = new Schema({
         require: true
     },
     institution: {
-        type: String,
+        type: Array,
     },
     isManager: {
         type: Boolean,
         default: false
     },
     roleVal: {
+        type: String
+    },
+    // 头像URL
+    avatorUrl: {
+        type: String
+    },
+    // 联系方式
+    contactWay: {
         type: String
     },
     createTime: {
