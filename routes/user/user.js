@@ -165,7 +165,6 @@ router.get('/getPrivateInfo', async ctx => {
         "contactWay":1,
         "avatorUrl":1,
         "institution":1,
-
     }).then( res => {
         new initCtx(ctx, 'SUCCESS', res).success()
     }).catch( err => {
