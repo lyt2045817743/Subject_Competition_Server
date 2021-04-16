@@ -11,6 +11,7 @@ const competition = require('./routes/competition/competition');
 const role = require('./routes/role/role');
 const user = require('./routes/user/user');
 const institution = require('./routes/institution/institution');
+const team = require('./routes/team/team')
 
 // 引入工具类
 const { dbUrl } = require('./util/base');
@@ -85,7 +86,7 @@ router.use('/api/competition', competition);
 router.use('/api/role', role);
 router.use('/api/user', user);
 router.use('/api/institution', institution);
-
+router.use('/api/team', team);
 
 app.use(router.routes());
 app.use(router.allowedMethods());
