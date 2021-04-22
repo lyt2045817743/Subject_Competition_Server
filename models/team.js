@@ -7,6 +7,10 @@ const TeamSchema = new Schema({
         unique:true,
         require: true
     },
+    competitionId:{
+        type: String,
+        require: true
+    },
     managerId:{
         type: String,
         require: true
@@ -17,6 +21,7 @@ const TeamSchema = new Schema({
     teacherId: {
         type: String
     },
+    // 0 招募中； 1 已招满
     teamState: {
         type: Number
     },
