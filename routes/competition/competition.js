@@ -42,9 +42,23 @@ router.get('/queryCompList', async ctx => {
     
     const { pageNum, pageCount, keyword } = ctx.query;
 
-    const listdata = await Competition.find({"name" : {$regex: keyword ? keyword : ''}},{'name':1,'_id':1, 'createTime': 1, 'institution': 1, 'currentInsti': 1, 'createTime': 1, 'curStageNum': 1, 'deadlineDate': 1}).sort({'createTime': -1}).skip((pageCount-1)*pageNum).limit(Number(pageNum));
+    const listdata = await Competition.find({"name" : {$regex: keyword ? keyword : ''}},{'name':1,'_id':1, 'createTime': 1, 'institution': 1, 'currentInsti': 1, 'createTime': 1, 'createUser': 1, 'curStageNum': 1, 'deadlineDate': 1}).sort({'createTime': -1}).skip((pageCount-1)*pageNum).limit(Number(pageNum));
     
     new initCtx(ctx, 'SUCCESS', listdata).success();
+})
+
+// 根据name删除某赛事
+router.delete('/delComp/:name', async (ctx) => {
+    const name = ctx.params.name;
+    
+    await Competition.deleteOne({name}).then( res => {
+        new initCtx(ctx, '删除成功').success()
+    }).catch( err => {
+
+        console.log(err);
+        new initCtx(ctx).fail('赛事删除失败，请重试', 500);
+    })
+
 })
 
 module.exports = router.routes();
