@@ -163,7 +163,7 @@ router.get('/getPrivateInfo', async ctx => {
         "roleVal": 1,
         "userName": 1,
         "contactWay":1,
-        "avatorUrl":1,
+        "avatarUrl":1,
         "institution":1,
     }).then( res => {
         new initCtx(ctx, 'SUCCESS', res).success()

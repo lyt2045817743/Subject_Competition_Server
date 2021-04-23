@@ -32,7 +32,7 @@ const UserSchema = new Schema({
         type: String
     },
     // 头像URL
-    avatorUrl: {
+    avatarUrl: {
         type: String
     },
     // 联系方式
