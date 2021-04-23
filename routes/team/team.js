@@ -1,6 +1,7 @@
 const router = require('koa-router')();
 const initCtx = require('../../util/initCtx');
 const Team = require('../../models/team');
+const Competition = require('../../models/competition');
 // const { chTeam } = require('../../util/checkParams');
 const codeList = require('../../enum/codeList');
 
@@ -67,6 +68,23 @@ router.get('/getTeamInfo/:teamId', async ctx => {
     })
 })
 
+// 根据赛事名称获取团队列表
+router.get('/getTeamListByCompName', async ctx => {
+    const { pageNum, pageCount, keyword, compName } = ctx.query;
+
+    const comp = await Competition.findOne({name : compName});
+    let teamList = [];
+    
+    if(comp) {
+        teamList = await Team.find({competitionId : {$in : comp['_id']}, "teamName" : {$regex: keyword ? keyword : ''}})
+        .sort({'createTime': -1})
+        .skip((pageCount-1)*pageNum)
+        .limit(Number(pageNum));
+    }
+
+    new initCtx(ctx, 'SUCCESS', teamList).success()
+})
+
 // // 根据teamName修改某个团队信息
 // router.put('/updateTeamInfo/:teamName', async ctx => {
 //     const teamName = ctx.params.teamName;
@@ -79,18 +97,18 @@ router.get('/getTeamInfo/:teamId', async ctx => {
 //     })
 // })
 
-// // 根据teamName删除某团队
-// router.delete('/delTeam/:teamName', async (ctx) => {
-//     const teamName = ctx.params.teamName;
+// 管理员根据teamName删除某团队
+router.delete('/delTeam/:teamName', async (ctx) => {
+    const teamName = ctx.params.teamName;
     
-//     await Team.deleteOne({teamName}).then( res => {
-//         new initCtx(ctx, '删除成功').success()
-//     }).catch( err => {
+    await Team.deleteOne({teamName}).then( res => {
+        new initCtx(ctx, '删除成功').success()
+    }).catch( err => {
 
-//         console.log(err);
-//         new initCtx(ctx).fail('团队删除失败，请重试', 500);
-//     })
+        console.log(err);
+        new initCtx(ctx).fail('团队删除失败，请重试', 500);
+    })
 
-// })
+})
 
 module.exports = router.routes();
