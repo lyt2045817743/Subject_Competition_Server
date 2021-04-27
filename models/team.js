@@ -15,9 +15,9 @@ const TeamSchema = new Schema({
         type: String,
         require: true
     },
-    membersId: {
-        type: Array,
-    },
+    // membersId: {
+    //     type: Array,
+    // },
     teacherId: {
         type: String
     },

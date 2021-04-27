@@ -2,6 +2,7 @@ const router = require('koa-router')();
 const initCtx = require('../../util/initCtx');
 const Team = require('../../models/team');
 const Competition = require('../../models/competition');
+const TeamUser = require('../../models/teamUser');
 // const { chTeam } = require('../../util/checkParams');
 const codeList = require('../../enum/codeList');
 
@@ -12,7 +13,6 @@ router.post('/addTeam', async ctx => {
     const team = new Team({
         teamName,
         managerId,
-        membersId,
         teacherId,
         teamState,
         joinCondition,
@@ -25,10 +25,37 @@ router.post('/addTeam', async ctx => {
     if(data.length) {
         new initCtx(ctx).fail('团队名称已经存在', 200, codeList.repeat);
     } else {
-        await team.save()
-        .then( res => {
+        const teamInfo = await team.save()
+
+        // 团队添加成功后，向团队成员表中依次填入负责人和团队成员
+        const teamUserList = [];
+        const teamId = teamInfo._id;
+
+        // 添加负责人
+        teamUserList.push({
+            teamId,
+            numberId: managerId,
+            isManager: true,
+            competitionId
+        })
+
+        if(membersId && membersId.length) {
+            membersId.forEach( item => {
+                teamUserList.push({
+                    teamId,
+                    numberId: item,
+                    isManager: false,
+                    competitionId
+                })
+            })
+        }
+
+        // 将数据加入数据库中
+        await TeamUser.insertMany(teamUserList).then( res => {
+            
             new initCtx(ctx, '添加团队成功').success();
         })
+
         .catch( err => {
             console.log(err);
             new initCtx(ctx).fail('添加团队失败', 500);
@@ -66,6 +93,18 @@ router.get('/getTeamInfo/:teamId', async ctx => {
         console.log(err);
         new initCtx(ctx).fail('团队查询失败，请稍后重试', 500)
     })
+})
+
+// 用户获取某一赛事中我的团队
+router.get('/getMyTeamInfo', async ctx => {
+    const { teamId, numberId, competitionId } = ctx.query;
+    const teamUserInfo = await TeamUser.findOne({teamId : {$regex: teamId ? teamId : ''}, numberId, competitionId});
+    if(teamUserInfo) {
+        const teamId = teamUserInfo.teamId
+        // console.log(teamId);
+        const myTeamInfo = await Team.findOne({_id: teamId});
+        new initCtx(ctx, 'SUCCESS', myTeamInfo).success();
+    }
 })
 
 // 根据赛事名称获取团队列表
