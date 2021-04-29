@@ -68,12 +68,15 @@ router.get('/queryUserList', async ctx => {
 router.get('/getUserInfo/:numberId', async ctx => {
     const numberId = ctx.params.numberId;
     await User.findOne({numberId}, {
-        'identityType': 1,
-        // 'initPwd': 1,
-        'isManager': 1,
-        'numberId': 1,
-        'roleVal': 1,
-        '_id': 1
+        "isManager": 1,
+        "_id": 1,
+        "identityType": 1,
+        "numberId": 1,
+        "roleVal": 1,
+        "userName": 1,
+        "contactWay":1,
+        "avatarUrl":1,
+        "institution":1,
     }).then( res => {
         new initCtx(ctx, 'SUCCESS', res).success()
     }).catch( err => {
@@ -152,7 +155,7 @@ router.put('/modifyPrivateInfo', async ctx => {
     
 })
 
-// 用户获取自己全部信息
+// 获取单个用户全部信息
 router.get('/getPrivateInfo', async ctx => {
     const { numberId } = ctx.state.user;
     await User.findOne({numberId}, {

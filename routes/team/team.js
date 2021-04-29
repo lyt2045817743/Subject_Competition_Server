@@ -99,12 +99,13 @@ router.get('/getTeamInfo/:teamId', async ctx => {
 router.get('/getMyTeamInfo', async ctx => {
     const { teamId, numberId, competitionId } = ctx.query;
     const teamUserInfo = await TeamUser.findOne({teamId : {$regex: teamId ? teamId : ''}, numberId, competitionId});
+    let myTeamInfo = {};
     if(teamUserInfo) {
         const teamId = teamUserInfo.teamId
         // console.log(teamId);
-        const myTeamInfo = await Team.findOne({_id: teamId});
-        new initCtx(ctx, 'SUCCESS', myTeamInfo).success();
-    }
+        myTeamInfo = await Team.findOne({_id: teamId});
+    } 
+    new initCtx(ctx, 'SUCCESS', myTeamInfo).success();
 })
 
 // 根据赛事名称获取团队列表
