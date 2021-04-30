@@ -28,7 +28,7 @@ router.post('/followSomeone', async ctx => {
 })
 
 router.get('/getFollow', async ctx => {
-    const { pageNum, pageCount, keyword, numberId } = ctx.query;
+    const { pageNum, pageCount, numberId } = ctx.query;
 
     let listdata = [];
 
@@ -51,6 +51,17 @@ router.get('/getFollow', async ctx => {
     }
 
     new initCtx(ctx, 'SUCCESS', userList).success();
+})
+
+router.get('/checkHasFollow', async ctx => {
+    const { fromUser, toUser } = ctx.query;
+    const result = await UserContact.findOne({fromUser, toUser});
+    
+    if(result && result.status) {
+        new initCtx(ctx, '已关注', []).success();
+    } else {
+        new initCtx(ctx, '未关注', []).success();
+    }
 })
 
 module.exports = router.routes()
