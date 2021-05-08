@@ -90,7 +90,10 @@ router.get('/getTeamInfo/:teamId', async ctx => {
     const teamId = ctx.params.teamId;
     const teamInfo = await Team.findOne({_id: teamId});
     let membersInfo = [];
+    let teacherInfo = {};
     if(teamInfo) {
+        
+        teacherInfo = await User.findOne({numberId: teamInfo.teacherId})
         const memberInfo = await TeamUser.findOne({
             competitionId: teamInfo.competitionId,
             teamId: teamInfo._id,
@@ -104,7 +107,7 @@ router.get('/getTeamInfo/:teamId', async ctx => {
         }
     }
     
-    new initCtx(ctx, 'SUCCESS', { ...teamInfo._doc, membersInfo}).success()
+    new initCtx(ctx, 'SUCCESS', { ...teamInfo._doc, membersInfo, teacherInfo}).success()
 })
 
 // 用户获取某一赛事中我的团队
