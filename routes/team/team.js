@@ -94,20 +94,21 @@ router.get('/getTeamInfo/:teamId', async ctx => {
     if(teamInfo) {
         
         teacherInfo = await User.findOne({numberId: teamInfo.teacherId})
-        const memberInfo = await TeamUser.findOne({
+        const memberInfo = await TeamUser.find({
             competitionId: teamInfo.competitionId,
             teamId: teamInfo._id,
             isManager: false
         })
-        if(memberInfo) {
-            const userInfo = await User.find({numberId: memberInfo.numberId});
-            if(userInfo) {
-                membersInfo = membersInfo.concat(userInfo)
-            }
+        
+        for(let i = 0; i < memberInfo.length; i++) {
+            const userInfo = await User.find({numberId: memberInfo[i].numberId});
+            membersInfo = membersInfo.concat(userInfo)
         }
+
     }
     
     new initCtx(ctx, 'SUCCESS', { ...teamInfo._doc, membersInfo, teacherInfo}).success()
+
 })
 
 // 用户获取某一赛事中我的团队
