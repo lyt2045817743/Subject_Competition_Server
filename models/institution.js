@@ -16,11 +16,11 @@ const institutionSchema = new Schema({
     managerTel: {
         type: String
     },
-    // 层级：属于第几层级
-    level: {
-        type: Number,
-        require: true
-    },
+    // // 层级：属于第几层级
+    // level: {
+    //     type: Number,
+    //     require: true
+    // },
     // 父层级的_id：如果没有父层级，则返回null
     parentId: {
         type: String

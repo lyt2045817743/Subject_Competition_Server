@@ -47,6 +47,16 @@ router.get('/queryCompList', async ctx => {
     new initCtx(ctx, 'SUCCESS', listdata).success();
 })
 
+router.get('/getCompInfo/:name', async ctx => {
+    const name = ctx.params.name;
+    await Competition.findOne({name}).then( res => {
+        new initCtx(ctx, 'SUCCESS', res).success()
+    }).catch( err => {
+        console.log(err);
+        new initCtx(ctx).fail('赛事信息查询失败，请稍后重试', 500)
+    })
+})
+
 // 根据name删除某赛事
 router.delete('/delComp/:name', async (ctx) => {
     const name = ctx.params.name;
